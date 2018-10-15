@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of input_morphologika</title>
+  <meta name="keywords" content="input_morphologika">
+  <meta name="description" content="Read information from morphologika into dataset object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; input_morphologika.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>input_morphologika
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Read information from morphologika into dataset object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function dataset = input_morphologika( filename ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Read information from morphologika into dataset object
+
+Jesus Puente</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="procrustes_analysis.html" class="code" title="">procrustes_analysis</a>	Run Generalized Procrustes Analysis (Full or Partial) on</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function dataset = input_morphologika( filename )</a>
+0002 <span class="comment">%Read information from morphologika into dataset object</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%Jesus Puente</span>
+0005 
+0006 dataset.filename = filename;
+0007 fid = fopen ( filename , <span class="string">'r'</span> );
+0008 
+0009 <span class="keyword">while</span>( ~feof(fid) )
+0010     line = lower(strtrim(fgetl(fid)));
+0011     <span class="keyword">if</span>( strcmp(line,<span class="string">'[individuals]'</span>) )
+0012         dataset.individuals = fscanf(fid,<span class="string">'%d'</span>);
+0013     <span class="keyword">elseif</span>( strcmp(line,<span class="string">'[landmarks]'</span>) )
+0014         dataset.landmarks = fscanf(fid,<span class="string">'%d'</span>);
+0015     <span class="keyword">elseif</span>( strcmp(line, <span class="string">'[dimensions]'</span>) )
+0016         dataset.dimensions = fscanf(fid,<span class="string">'%d'</span>);
+0017     <span class="keyword">elseif</span>( strcmp(line, <span class="string">'[names]'</span>) )
+0018         dataset.names = cell( dataset.individuals, 1 );
+0019         <span class="keyword">for</span> ii = 1 : dataset.individuals
+0020             dataset.names{ii} = strtrim(fgetl(fid));
+0021         <span class="keyword">end</span>
+0022     <span class="keyword">elseif</span>( strcmp(line,<span class="string">'[groups]'</span>) )
+0023         line = strtrim(fgetl(fid));
+0024         [number_start, number_end] = regexp( line, <span class="string">'\d*'</span> );
+0025         [name_start, name_end ] = regexp(line,<span class="string">'\D*'</span>);
+0026         dataset.number_of_groups = length(number_start);
+0027         <span class="comment">%         dataset.group_name = cell(dataset.number_of_groups,1);</span>
+0028         <span class="comment">%         dataset.group_inds  = cell(dataset.number_of_groups,1);</span>
+0029         <span class="comment">%         cumul=0;</span>
+0030         <span class="comment">%         for ii = 1: dataset.number_of_groups</span>
+0031         <span class="comment">%             dataset.group_name{ii}=line(name_start(ii):name_end(ii));</span>
+0032         <span class="comment">%             dataset.group_inds{ii}=[cumul+1 : cumul+str2num(line(number_start(ii):number_end(ii)))];</span>
+0033         <span class="comment">%             cumul = cumul + str2num(line(number_start(ii):number_end(ii)));</span>
+0034         <span class="comment">%         end</span>
+0035         dataset.group = zeros( 1, dataset.individuals);
+0036         dataset.group_name = cell(dataset.number_of_groups,1);
+0037         cumul=0;
+0038         <span class="keyword">for</span> ii = 1: dataset.number_of_groups
+0039             dataset.group_name{ii}=line(name_start(ii):name_end(ii));
+0040             dataset.group([cumul+1 : cumul+str2num(line(number_start(ii):number_end(ii)))])=ii;
+0041             cumul = cumul + str2num(line(number_start(ii):number_end(ii)));
+0042         <span class="keyword">end</span>
+0043     <span class="keyword">elseif</span>( strcmp(line,<span class="string">'[rawpoints]'</span>) )        
+0044         <span class="keyword">for</span> ii = 1 : dataset.individuals
+0045             <span class="comment">%Eat up newlines</span>
+0046             label = strtrim(fgetl(fid));
+0047             <span class="keyword">while</span>(length(label)==0) label = strtrim(fgetl(fid)); <span class="keyword">end</span>;
+0048             dataset.labels{ii} = label;
+0049             [ coords ] = fscanf(fid,<span class="string">'%f'</span>,dataset.dimensions * dataset.landmarks);
+0050             dataset.verts{ii} = reshape(coords, dataset.dimensions, dataset.landmarks);     
+0051         <span class="keyword">end</span>
+0052     <span class="keyword">end</span>
+0053 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of write_morphologika</title>
+  <meta name="keywords" content="write_morphologika">
+  <meta name="description" content="Write shape information to a Morphologika file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; write_morphologika.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>write_morphologika
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Write shape information to a Morphologika file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function write_morphologika(filename , ds , ga , varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Write shape information to a Morphologika file</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clusterReduceHighRes.html" class="code" title="">clusterReduceHighRes</a>	% set path and preparation</li><li><a href="clusterReduceLowRes.html" class="code" title="">clusterReduceLowRes</a>	% set path and preparation</li><li><a href="main.html" class="code" title="">main</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function add( txt )</a></li><li><a href="#_sub2" class="code">function str = nr( num )</a></li><li><a href="#_sub3" class="code">function str = nre( num )</a></li><li><a href="#_sub4" class="code">function addnl</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function write_morphologika(filename , ds , ga , varargin)</a>
+0002 <span class="comment">% Write shape information to a Morphologika file</span>
+0003 
+0004 <span class="comment">%Arguments</span>
+0005 remove = [];
+0006 <span class="keyword">if</span>( nargin == 4 )
+0007     toremove = varargin{1};
+0008 <span class="keyword">end</span>
+0009 
+0010 ind = [ 1 : ds. n ];
+0011 ind ( remove ) = [];
+0012 
+0013 nn  = length( ind );
+0014 
+0015 <span class="keyword">global</span> file; file=[]; 
+0016 
+0017 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>(<span class="string">'[Individuals]'</span>);
+0018 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>( <a href="#_sub2" class="code" title="subfunction str = nr( num )">nr</a> ( nn ) );
+0019 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>(<span class="string">'[landmarks]'</span> );
+0020 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>( <a href="#_sub2" class="code" title="subfunction str = nr( num )">nr</a> ( ds.N( ga.k ) ) );
+0021 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>(<span class="string">'[dimensions]'</span>);
+0022 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>( <a href="#_sub2" class="code" title="subfunction str = nr( num )">nr</a> ( 3 ) );
+0023 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>(<span class="string">'[names]'</span>);
+0024 <span class="keyword">for</span> ll = 1:nn
+0025     <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>( ds.names{ ind(ll) } );
+0026 <span class="keyword">end</span>
+0027 <a href="#_sub4" class="code" title="subfunction addnl">addnl</a>;
+0028 <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>(<span class="string">'[rawpoints]'</span>);
+0029 <span class="keyword">for</span> ll= 1:nn
+0030     <a href="#_sub4" class="code" title="subfunction addnl">addnl</a>;
+0031     display( [<span class="string">'Adding bone '</span> num2str( ind(ll) ) ] );
+0032     <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>([ <span class="string">''''</span>  ds.names{ ind(ll) } ]);
+0033     <a href="#_sub4" class="code" title="subfunction addnl">addnl</a>;
+0034     
+0035 <span class="comment">%     V = ga.R{ ind(ll) } * ds.shape{ ind(ll) }.X{ ga.k } * ga.P{ ind(ll) };</span>
+0036     V = ga.R{ind(ll)} * ds.shape{ind(ll)}.X{ga.k} * ga.P{ind(ll)} * (ds.shape{ind(ll)}.scale/sqrt(ds.N(ds.K)));
+0037     
+0038     <span class="keyword">for</span> vv = 1 : ds.N( ga.k ) 
+0039         <a href="#_sub1" class="code" title="subfunction add( txt )">add</a>( [ <a href="#_sub3" class="code" title="subfunction str = nre( num )">nre</a>( V(1,vv) ) <span class="string">' '</span> <a href="#_sub3" class="code" title="subfunction str = nre( num )">nre</a>( V(2,vv) ) <span class="string">' '</span> <a href="#_sub3" class="code" title="subfunction str = nre( num )">nre</a>( V(3,vv) ) ]);
+0040     <span class="keyword">end</span> 
+0041 <span class="keyword">end</span>
+0042 
+0043 fileID = fopen( filename, <span class="string">'w'</span> );
+0044 fprintf( fileID, file );
+0045 fclose(fileID);
+0046 <span class="keyword">end</span>
+0047 
+0048 <a name="_sub1" href="#_subfunctions" class="code">function add( txt ) </a>
+0049 <span class="keyword">global</span> file;
+0050 file = [ file  txt <span class="string">'\n'</span> ];
+0051 <span class="keyword">end</span>
+0052 
+0053 <a name="_sub2" href="#_subfunctions" class="code">function str = nr( num ) </a>
+0054 str=num2str(num);
+0055 <span class="keyword">end</span>
+0056 
+0057 <a name="_sub3" href="#_subfunctions" class="code">function str = nre( num ) </a>
+0058 str=num2str(num,<span class="string">'%12.7e'</span>);
+0059 <span class="keyword">end</span>
+0060 
+0061 <a name="_sub4" href="#_subfunctions" class="code">function addnl</a>
+0062 <span class="keyword">global</span> file;
+0063 file = [file <span class="string">'\n'</span>];
+0064 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -12,18 +12,26 @@ delete(fullfile(pwd, '/cluster/output/*'));
 delete(fullfile(pwd, '/cluster/error/*'));
 delete(fullfile(pwd, '/cluster/script/*'));
 
-funcArg = {'clusterPreprocess', 'clusterMapLowRes',...
-    'clusterReduceLowRes', 'clusterMapHighRes',...
-    'clusterReduceHighRes', 'clusterPostprocessing'};
+%<<<<<<< HEAD
+%funcArg = {'clusterPreprocess', 'clusterMapLowRes',...
+%    'clusterReduceLowRes', 'clusterMapHighRes',...
+%    'clusterReduceHighRes', 'clusterPostprocessing'};
+%=======
+funcArg = {'clusterMapLowRes', 'clusterReduceLowRes', 'clusterMapHighRes', 'clusterReduceHighRes'};
+%>>>>>>> d0dddb3294f936c1d498fdc04e0fae58610afc62
 
 PBS = '#PBS -l nodes=1:ppn=1,walltime=3:00:00\n#PBS -m abe\n';
 command = 'matlab -nodesktop -nodisplay -nosplash -r ';
 matlab_call = @(n) ['\"cd ' pwd '; ' funcArg{n} '; exit;\"'];
 
 qsub = '!qsub ';
-holdArg = {'-sync y ', '-sync y -hold_jid job* ',...
-    '-sync y -hold_jid job* ', '-sync y ', '-sync y -hold_jid job* ',...
-    '-sync y -hold_jid job* '};
+%<<<<<<< HEAD
+%holdArg = {'-sync y ', '-sync y -hold_jid job* ',...
+%    '-sync y -hold_jid job* ', '-sync y ', '-sync y -hold_jid job* ',...
+%    '-sync y -hold_jid job* '};
+%=======
+holdArg = {'-sync y ', '-sync y -hold_jid job* ', '-sync y ', '-sync y -hold_jid job* '};
+%>>>>>>> d0dddb3294f936c1d498fdc04e0fae58610afc62
 
 if (length(strfind(email_notification, '@')) == 1)
 	etcArg = @(n) ['-m e -M ' email_notification ' -N ' funcArg{n} ' -o ' fullfile(pwd, '/cluster/output/', ['stdout_' funcArg{n}]) ' -e ' fullfile(pwd, '/cluster/error/', ['stderr_' funcArg{n}]) ' ' fullfile(pwd, '/cluster/script', ['script_' funcArg{n}])]; 

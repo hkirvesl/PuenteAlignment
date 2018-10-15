@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of subsample</title>
+  <meta name="keywords" content="subsample">
+  <meta name="description" content="Subsample N points from V, using points in seed as starting seed">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; subsample.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>subsample
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Subsample N points from V, using points in seed as starting seed</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ind = subsample( V, N, seed ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Subsample N points from V, using points in seed as starting seed
+ Arguments:
+   seed - 3 x M matrix with points to be respected in V, i.e. points that
+   belong to V and that should be the first M points in the resulting X.
+   E.g. when you had a previously subsampled set and you want to just
+   increase the number of sampled points</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="get_subsampled_shape.html" class="code" title="function X = get_subsampled_shape( dir , id , N )">get_subsampled_shape</a>	Read already subsampled file, if it exists</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ind = subsample( V, N, seed )</a>
+0002 <span class="comment">% Subsample N points from V, using points in seed as starting seed</span>
+0003 <span class="comment">% Arguments:</span>
+0004 <span class="comment">%   seed - 3 x M matrix with points to be respected in V, i.e. points that</span>
+0005 <span class="comment">%   belong to V and that should be the first M points in the resulting X.</span>
+0006 <span class="comment">%   E.g. when you had a previously subsampled set and you want to just</span>
+0007 <span class="comment">%   increase the number of sampled points</span>
+0008 
+0009 <span class="keyword">if</span> isempty( seed )
+0010     tmp               = V(:,randi( N ));
+0011     D                 = pdist2( V', tmp');
+0012     [ tmpD , tmpind ] = max( D );
+0013     seed              = V(:, tmpind(1) ) ;
+0014 <span class="keyword">end</span>
+0015 
+0016 <span class="comment">% Find indices corresponding to seed</span>
+0017 ind_seed = knnsearch( V', seed' );
+0018 <span class="keyword">if</span>( norm( seed - V(:,ind_seed) , <span class="string">'fro'</span> ) &gt; 1e-10 )
+0019     error(<span class="string">'Some seed point did not belong to the set of points to subsample from'</span>);
+0020 <span class="keyword">end</span>
+0021 n_seed = length( ind_seed );
+0022 ind = [ reshape( ind_seed, 1, n_seed )  zeros( 1, N - n_seed ) ];
+0023 
+0024 [ tmpIDX, D] = knnsearch( V(:,ind(1:n_seed))', V' );
+0025 <span class="keyword">for</span> ii = n_seed + 1 : N
+0026     [tmp, ind(ii)] = max(D);
+0027     new_dist       = pdist2( V', V(:,ind(ii))');
+0028     D              = min( D , new_dist );
+0029 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

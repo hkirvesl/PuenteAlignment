@@ -31,10 +31,17 @@ if (restart == 1)
     system(['mkdir ' outputPath]);
 end
 
-touch([outputPath 'original/']);
-touch([outputPath 'subsampled/']);
-touch([outputPath 'aligned/']);
-touch([outputPath 'jobs/']);
+%<<<<<<< HEAD
+%touch([outputPath 'original/']);
+%touch([outputPath 'subsampled/']);
+%touch([outputPath 'aligned/']);
+%touch([outputPath 'jobs/']);
+%=======
+touch(fullfile(outputPath, 'original', filesep));
+touch(fullfile(outputPath, 'subsampled', filesep));
+touch(fullfile(outputPath, 'aligned', filesep));
+touch(fullfile(outputPath, 'jobs', filesep));
+%>>>>>>> d0dddb3294f936c1d498fdc04e0fae58610afc62
 
 set(0,'RecursionLimit',1500);
 rng('shuffle');
@@ -46,15 +53,16 @@ ds.run     = '';     % Used for writing output and intermediate files
 [ds.names, suffix] = getFileNames(meshesPath);
 ds.ids     = arrayfun(@(x) sprintf('%03d', x), 1:length(ds.names), 'UniformOutput', 0);
 cellfun(@(a,b) copyfile(a,b),...
-    cellfun(@(x) [meshesPath x suffix], ds.names, 'UniformOutput', 0),...
-    cellfun(@(x) [outputPath 'original/' x suffix], ds.ids, 'UniformOutput', 0));
+    cellfun(@(x) fullfile(meshesPath, [x suffix]), ds.names, 'UniformOutput', 0),...
+    cellfun(@(x) fullfile(outputPath, 'original', [x suffix]), ds.ids, 'UniformOutput', 0));
 
 %% paths to be passed as global constants
-ds.n                = length( ds.ids ); %Number of shapes
-ds.K                = length( ds.N ); %Number of levels
-ds.msc.mesh_dir     = meshesPath;
-ds.msc.output_dir   = outputPath;
-ds.msc.mesh_aligned_dir = [outputPath 'aligned/'];
+ds.n                    = length( ds.ids ); %Number of shapes
+ds.K                    = length( ds.N ); %Number of levels
+[ds.base, ds.refAlign]  = ref_align_params( align_to, strcat(ds.names, suffix));
+ds.msc.mesh_dir         = meshesPath;
+ds.msc.output_dir       = outputPath;
+ds.msc.mesh_aligned_dir = fullfile(outputPath, 'aligned', filesep);
 
 %% Useful lambda functions
 center = @(X) X-repmat(mean(X,2),1,size(X,2));
@@ -68,9 +76,10 @@ ds.shape = cell ( 1, ds.n );
 disp('Subsampling meshes...');
 for ii = 1 : ds.n
     progressbar(ii, ds.n, 20);
-    [ds.shape{ ii }.origV, ds.shape{ ii }.origF] = read_off([meshesPath ds.names{ii} suffix]);
+    [ds.shape{ ii }.origV, ds.shape{ ii }.origF] = ...
+        read_off(fullfile(meshesPath, [ds.names{ii} suffix]));
     ds.shape{ ii }.X              = cell( 1, ds.K );
-    ds.shape{ ii }.X{ ds.K }      = get_subsampled_shape( outputPath, ds.ids{ii} , ds.N( ds.K ), ssType );
+    ds.shape{ ii }.X{ ds.K }      = get_subsampled_shape( outputPath, ds.ids{ii} , ds.N( ds.K ), ssType);
     ds.shape{ ii }.center         = mean(  ds.shape{ ii }.X{ ds.K }, 2 );
     ds.shape{ ii }.scale          = scale( ds.shape{ ii }.X{ ds.K } );
     ds.shape{ ii }.epsilon        = zeros( 1, ds.K );
@@ -91,7 +100,7 @@ disp('Done');
 %Read the low resolution files, these are used for display puposes only
 for ii = 1 : ds.n
     %Read the files
-    lowres_off_fn = [outputPath 'subsampled' filesep ds.ids{ii} '.off'];
+    lowres_off_fn = fullfile(outputPath, 'subsampled', [ds.ids{ii}, '.off']);
     if exist( lowres_off_fn , 'file' )
         [ds.shape{ ii }.lowres.V ,ds.shape{ ii }.lowres.F] = read_off(lowres_off_fn);
     else
@@ -112,7 +121,7 @@ pa.A          = upper_triangle( ds.n ); % a 1 entry in this matrix indicates the
 pa.max_iter   = max_iter;
 pa.allow_reflection = allow_reflection;
 f             = @( ii , jj ) gpd( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.max_iter, pa.allow_reflection );
-pa.pfj        = [ds.msc.output_dir 'jobs/low/'];
+pa.pfj        = fullfile(ds.msc.output_dir, 'jobs', 'low', filesep); % 'pfj' stands for path for jobs
 pa.codePath   = codePath;
 pa.email_notification = email_notification;
 
@@ -127,19 +136,20 @@ pa = reduce( ds, pa, n_jobs );
 %% Globalization
 % 'ga' stands for global alignment
 mst     = graphminspantree( sparse( pa.d + pa.d' ) );
-ga      = globalize( pa, mst+mst', 2,type ); 
+ga      = globalize( pa, mst+mst', ds.base, type); 
 ga.k    = k;
 
 plot_tree( pa.d+pa.d', mst, ds.names, 'mds', ones(1,ds.n),'');
 
 %% Output low resolution
 theta = pi/2; % Useful for rotating files to look nicer
-write_off_global_alignment( [ds.msc.output_dir 'alignment_low.off' ], ds, ga, 1:ds.n, 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}', 3.0, 1);
-write_morphologika( [ds.msc.output_dir 'morphologika_unscaled_low.txt'], ds, ga );
+write_obj_aligned_shapes(ds, ga);
+write_off_global_alignment( fullfile(ds.msc.output_dir, 'alignment_low.off'), ds, ga, 1:ds.n, 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}', 3.0, 1);
+write_morphologika( fullfile(ds.msc.output_dir, 'morphologika_unscaled_low.txt'), ds, ga );
 % theta=pi/2; % Useful for rotating files to look nicer
 % write_off_global_alignment( [ds.msc.output_dir 'alignment.off' ], ds , ga , [1:ds.n], 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}',3.0,1);
 % write_morphologika( [ds.msc.output_dir 'morphologika_unscaled.txt' ], ds, ga );
-save( [ ds.msc.output_dir 'session.mat' ] , 'ds', 'pa', 'ga', 'mst' );
+save( fullfile(ds.msc.output_dir, 'session.mat'), 'ds', 'pa', 'ga', 'mst' );
 
 %% Compute the edges in the MST with higher number of points
 pa_tmp = localize( ga );
@@ -147,7 +157,7 @@ pa.R = pa_tmp.R;
 
 k         = 2; % Which level to run next
 pa.A      = upper_triangle( ds.n );
-pa.pfj    = [ds.msc.output_dir 'jobs/high/']; % 'pfj' stands for path for jobs
+pa.pfj    = fullfile(ds.msc.output_dir, 'jobs', 'high', filesep); % 'pfj' stands for path for jobs
 tmpR  = pa.R;
 tmpP  = pa.P;
 f   = @( ii , jj ) locgpd( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.R{ii,jj}, ones(ds.N(k)), pa.max_iter );
@@ -161,13 +171,14 @@ pa = reduce( ds, pa, n_jobs );
 
 %% Globalization
 % mst is the same as before
-ga     = globalize( pa, mst , 1 ,type);
+ga     = globalize( pa, mst , ds.base, type);
 ga.k   = k;
 
 %% Output higher resolution
-write_off_global_alignment( [ds.msc.output_dir 'alignment_high.off' ], ds , ga, [1:ds.n], 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}',3.0,1);
-write_morphologika( [ds.msc.output_dir 'morphologika_unscaled_high.txt' ], ds, ga );
-save( [ ds.msc.output_dir 'session_2.mat' ] , 'ds', 'pa', 'ga', 'mst' );
+write_obj_aligned_shapes(ds, ga);
+write_off_global_alignment( fullfile(ds.msc.output_dir, 'alignment_high.off'), ds , ga, 1:ds.n, 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}',3.0,1);
+write_morphologika( fullfile(ds.msc.output_dir, 'morphologika_unscaled_high.txt'), ds, ga );
+save( fullfile(ds.msc.output_dir, 'session_2.mat'), 'ds', 'pa', 'ga', 'mst' );
 
 %% Compute all pairwise Procrustes distances
 proc_d     = zeros( ds.n , ds.n );
@@ -184,6 +195,11 @@ plot_tree( proc_d+proc_d' , mst_proc_d , ds.names , 'mds', ones(1,ds.n) , 'MDS p
 
 proc_d=(proc_d+proc_d')/2;
 coords=mdscale(proc_d,3)';
-write_off_placed_shapes( [ds.msc.output_dir 'map.off' ], coords, ds, ga, eye(3), mst_proc_d);
+write_off_placed_shapes( fullfile(ds.msc.output_dir,'map.off'), coords, ds, ga, eye(3), mst_proc_d);
+
+%% Optional principal components analysis of partial procrustes tangent coordinates
+if do_tangent_pca == 1
+    tangent_pca(ds, ga, k);
+end
 
 disp('Alignment Completed');

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of procrustes_analysis</title>
+  <meta name="keywords" content="procrustes_analysis">
+  <meta name="description" content="Run Generalized Procrustes Analysis (Full or Partial) on">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; procrustes_analysis.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>procrustes_analysis
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Run Generalized Procrustes Analysis (Full or Partial) on</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Run Generalized Procrustes Analysis (Full or Partial) on
+ a morphologica dataset and produce the files required
+ by jp_scatter_plot to make the plots with the convex hulls</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="generalized_procrustes.html" class="code" title="function [Z, mmean] = generalized_procrustes( config , method )">generalized_procrustes</a>	Generalized Procrustes Analysis</li><li><a href="input_morphologika.html" class="code" title="function dataset = input_morphologika( filename )">input_morphologika</a>	Read information from morphologika into dataset object</li><li><a href="jp_scatter_plot_files.html" class="code" title="function jp_scatter_plot_files( points , varargin )">jp_scatter_plot_files</a>	Write files that jp_scatter_plot.py uses to generate a scatter plot with</li><li><a href="plot_configurations.html" class="code" title="function plot_configurations( config , ind )">plot_configurations</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Run Generalized Procrustes Analysis (Full or Partial) on</span>
+0002 <span class="comment">% a morphologica dataset and produce the files required</span>
+0003 <span class="comment">% by jp_scatter_plot to make the plots with the convex hulls</span>
+0004 
+0005 <span class="comment">%Justin's dataset</span>
+0006 <span class="keyword">if</span>(0)
+0007     morphologika_file = <span class="string">'Observer determined landmarks_106taxa_use-landmarks_1-5_7-27_30.txt'</span>;
+0008     ind = [ 1:5 7:27 30]; <span class="comment">%Indices of landmarks we care about</span>
+0009     db_group = [1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    4    4    4    4    4    4    5    5    5    5    2    5    3    2    2    5    5    7    7    4    7    6    6    6    6    6    5    5    7    7]; <span class="comment">%Groups given by Doug</span>
+0010     method=<span class="string">'full'</span>;
+0011     pcx=1; <span class="comment">% Number of ppal component to plot in x axis</span>
+0012     pcy=3; <span class="comment">% Number of ppal component to plot in y axis</span>
+0013 <span class="keyword">end</span>
+0014 
+0015 <span class="comment">%Jesus' dataset</span>
+0016 <span class="keyword">if</span>(0)
+0017     morphologika_file = <span class="string">'Computer-correspondence_106taxa_1200points.txt'</span>;
+0018     ind = [ 1:1200]; <span class="comment">%Indices of landmarks we care about</span>
+0019     db_group = [1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    4    4    4    4    4    4    5    5    5    5    2    5    3    2    2    5    5    7    7    4    7    6    6    6    6    6    5    5    7    7]; <span class="comment">%Groups given by Doug</span>
+0020     method=<span class="string">'full'</span>;
+0021     pcx=1; <span class="comment">% Number of ppal component to plot in x axis</span>
+0022     pcy=3; <span class="comment">% Number of ppal component to plot in y axis</span>
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="comment">%Test dataset with 128 points only</span>
+0026 <span class="keyword">if</span>(0)
+0027     morphologika_file = <span class="string">'morphologika_2.txt'</span>;
+0028     ind = [ 1:256]; <span class="comment">%Indices of landmarks we care about</span>
+0029     db_group = [1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    3    4    4    4    4    4    4    5    5    5    5    2    5    3    2    2    5    5    7    7    4    7    6    6    6    6    6    5    5    7    7]; <span class="comment">%Groups given by Doug</span>
+0030     method=<span class="string">'full'</span>;
+0031     pcx=1; <span class="comment">% Number of ppal component to plot in x axis</span>
+0032     pcy=2; <span class="comment">% Number of ppal component to plot in y axis</span>
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="keyword">if</span>(1) <span class="comment">% Teeth dataset from PNAS paper</span>
+0036     morphologika_file = [ds.msc.output_dir <span class="string">'morphologika_2.txt'</span>];
+0037     ind = [ 1:256]; <span class="comment">%Indices of landmarks we care about</span>
+0038     db_group = ones(1,ds.n);
+0039     method=<span class="string">'full'</span>;
+0040     pcx=1; <span class="comment">% Number of ppal component to plot in x axis</span>
+0041     pcy=3; <span class="comment">% Number of ppal component to plot in y axis</span>
+0042 <span class="keyword">end</span>
+0043 
+0044 
+0045 <span class="comment">% Read Morphologika file</span>
+0046 curr_dataset = <a href="input_morphologika.html" class="code" title="function dataset = input_morphologika( filename )">input_morphologika</a>( morphologika_file );
+0047 
+0048 <span class="comment">%Subsample the appropriate landmarks</span>
+0049 curr_dataset.landmarks = length(ind);
+0050 tmp = curr_dataset.verts;
+0051 clear curr_dataset.verts;
+0052 curr_dataset.verts = cell( curr_dataset.individuals, 1);
+0053 <span class="keyword">for</span> ii = 1 : curr_dataset.individuals
+0054     curr_dataset.verts{ii} = tmp{ii}(:,ind);
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="comment">%Overwrite the appropriate groups</span>
+0058 curr_dataset.group = db_group;
+0059 
+0060 <span class="comment">%Run Generalized Full Procrustes</span>
+0061 [Z,mmean]=<a href="generalized_procrustes.html" class="code" title="function [Z, mmean] = generalized_procrustes( config , method )">generalized_procrustes</a>( curr_dataset.verts , method );
+0062 
+0063 <span class="comment">%Convert matrices to vectors and do PCA on them</span>
+0064 X = zeros( curr_dataset.individuals , curr_dataset.landmarks * curr_dataset.dimensions);
+0065 <span class="keyword">for</span> ii = 1: curr_dataset.individuals
+0066     X(ii,:)=reshape( Z{ii}, 1, curr_dataset.landmarks * curr_dataset.dimensions);
+0067 <span class="keyword">end</span>
+0068 [ coeff , score, latent ] = princomp(X);
+0069 
+0070 <span class="comment">%Plot the ii and jj principal components</span>
+0071 figure; hold on;
+0072 scatter( score(:,pcx), score(:,pcy),30,curr_dataset.group,<span class="string">'filled'</span>)
+0073 
+0074 <span class="comment">%Create files for python script</span>
+0075 <a href="jp_scatter_plot_files.html" class="code" title="function jp_scatter_plot_files( points , varargin )">jp_scatter_plot_files</a>([score(:,pcx)' ;  score(:,pcy)' ; curr_dataset.group-1]); <span class="comment">%Groups must be 0-indexed for the python script</span>
+0076 <span class="comment">%Have to run the script</span>
+0077 
+0078 <span class="keyword">if</span>(0)
+0079     <span class="comment">%Plot aligned configurations</span>
+0080     <a href="plot_configurations.html" class="code" title="function plot_configurations( config , ind )">plot_configurations</a>(Z,[67 68])
+0081     title(<span class="string">'Alignments'</span>);
+0082 <span class="keyword">end</span>
+0083 
+0084</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

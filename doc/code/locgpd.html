@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of locgpd</title>
+  <meta name="keywords" content="locgpd">
+  <meta name="description" content="Local Generalized Procrustes Distance function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; locgpd.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>locgpd
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Local Generalized Procrustes Distance function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Local Generalized Procrustes Distance function</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="jprocrustes.html" class="code" title="function [R, d] = jprocrustes(x, y)">jprocrustes</a>	Computes the best rotation that when applied to</li><li><a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>	Output:</li><li><a href="linassign.html" class="code" title="function [ P, d, n_vars] = linassign( A , D )">linassign</a>	Linear assignment problem</li><li><a href="ltwoinf.html" class="code" title="function d = ltwoinf( X )">ltwoinf</a>	l2-inf norm of X, i.e.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clusterMapHighRes.html" class="code" title="">clusterMapHighRes</a>	% set path and preparation</li><li><a href="gpd.html" class="code" title="function [ d, R, P, gamma ] = gpd ( X, Y, max_iter, ref )">gpd</a>	Generalized Procrustes Distance</li><li><a href="main.html" class="code" title="">main</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function D2 = D2_sparse(X,Y,A)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )</a>
+0002 <span class="comment">% Local Generalized Procrustes Distance function</span>
+0003 
+0004 N           = size( X, 2 );
+0005 
+0006 <span class="comment">% How many different entries do these permutations have ?</span>
+0007 diff_perms = @( P1, P2 ) sum(sum(abs(P1-P2)));
+0008 
+0009 <span class="comment">% Compute the required distances</span>
+0010 MD2_0 = <a href="#_sub1" class="code" title="subfunction D2 = D2_sparse(X,Y,A)">D2_sparse</a>( X , R_0*Y , M_0 );
+0011 
+0012 [P_0, d2, n_vars] = <a href="linassign.html" class="code" title="function [ P, d, n_vars] = linassign( A , D )">linassign</a>( M_0 , MD2_0 );
+0013 <span class="comment">%%% uncomment the following line to get debug information printed to screen</span>
+0014 <span class="comment">% display(['Initial linear assignment, nvars/tot = ' num2str( 100*nnz(M_0)/(size(X,2).^2), '%.2f' ) '%' ]);</span>
+0015 
+0016 <span class="comment">% Not very elegant since MATLAB doesn't have repeat-until loops</span>
+0017 P = P_0; R = R_0; d = sqrt( d2 ); P_prev = sparse( N, N );
+0018 numIter = 0;
+0019 <span class="keyword">while</span> (diff_perms(P,P_prev) &gt; 0)
+0020     numIter = numIter+1;
+0021     d_prev = d; P_prev = P; R_prev = R;
+0022     
+0023     [R, d]   = <a href="jprocrustes.html" class="code" title="function [R, d] = jprocrustes(x, y)">jprocrustes</a>( X, Y*P_prev );
+0024     
+0025     gamma    = 1.5*<a href="ltwoinf.html" class="code" title="function d = ltwoinf( X )">ltwoinf</a>(X-R*Y*P_prev);
+0026     [M, MD2] = <a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>( X, R*Y, gamma);
+0027     
+0028     [P, d2, n_vars] = <a href="linassign.html" class="code" title="function [ P, d, n_vars] = linassign( A , D )">linassign</a>( M , MD2 );        
+0029     
+0030     <span class="keyword">if</span>( d &gt; d_prev )
+0031         <span class="comment">%Check.This should not be possible, throw an error</span>
+0032         <span class="comment">%Have to debug why sometimes it gets here.</span>
+0033         <span class="comment">%error('Impossible, the function should have decreased, there has to be a bug');</span>
+0034     <span class="keyword">end</span>
+0035     
+0036     <span class="comment">%%% uncomment the following line to get debug information printed to screen</span>
+0037     <span class="comment">% display(['P diff = ' num2str(diff_perms(P,P_prev) ) ', d = ' num2str(d,'%.4f') ', nvars/tot = ' num2str(100*n_vars/( size(X,2).^2 ) , '%.2f') '% ; gamma = '  num2str(gamma) ' ; d_R = ' num2str( acos( trace(R*R_prev'/3) ) , '%.6f' ) ]);</span>
+0038     <span class="keyword">if</span> ((abs(d-d_prev)&lt;1e-5*d_prev) || (numIter&gt;max_iter))
+0039         <span class="keyword">break</span>;
+0040     <span class="keyword">end</span>
+0041     <span class="keyword">if</span> (numIter&gt;100 &amp;&amp; (mod(numIter,100)==0))
+0042         disp(numIter);
+0043     <span class="keyword">end</span>
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="keyword">end</span>
+0047 
+0048 <a name="_sub1" href="#_subfunctions" class="code">function D2 = D2_sparse(X,Y,A)</a>
+0049 <span class="comment">%The (i,j) column of D2 contains the distance between X(:,i) and Y(:,j) if</span>
+0050 <span class="comment">%A(i,j)=1, otherwise it is zero</span>
+0051 [ r , c ] = find( A );
+0052 tmpD2     = sum( ( X(:,r) - Y(:,c) ).^2 , 1 );
+0053 D2        = sparse( r , c , tmpD2 );
+0054 <span class="keyword">end</span>
+0055 
+0056 
+0057 
+0058 
+0059 
+0060 
+0061</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

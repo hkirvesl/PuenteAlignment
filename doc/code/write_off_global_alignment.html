@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of write_off_global_alignment</title>
+  <meta name="keywords" content="write_off_global_alignment">
+  <meta name="description" content="Write an off file with the shapes in ds aligned according">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; write_off_global_alignment.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>write_off_global_alignment
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Write an off file with the shapes in ds aligned according</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function write_off_global_alignment( filename, ds, ga, varargin ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Write an off file with the shapes in ds aligned according
+ to global alignment ga
+ Output only the shapes with indices in ind and display with
+ 'per_row' number of shapes per row</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clusterReduceHighRes.html" class="code" title="">clusterReduceHighRes</a>	% set path and preparation</li><li><a href="clusterReduceLowRes.html" class="code" title="">clusterReduceLowRes</a>	% set path and preparation</li><li><a href="main.html" class="code" title="">main</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function write_off_global_alignment( filename, ds, ga, varargin )</a>
+0002 <span class="comment">% Write an off file with the shapes in ds aligned according</span>
+0003 <span class="comment">% to global alignment ga</span>
+0004 <span class="comment">% Output only the shapes with indices in ind and display with</span>
+0005 <span class="comment">% 'per_row' number of shapes per row</span>
+0006 
+0007 center = @(X) X-repmat(mean(X,2),1,size(X,2));
+0008 scale  = @(X) norm(center(X),<span class="string">'fro'</span>) ;
+0009 
+0010 <span class="comment">% Parameters</span>
+0011 inds    = 1 : ds.n;
+0012 <span class="keyword">if</span>( nargin &gt;= 4)
+0013     inds    = varargin{1};
+0014 <span class="keyword">end</span>
+0015 per_row = floor( sqrt( length( inds ) ) );
+0016 <span class="keyword">if</span>( nargin &gt;= 5 )
+0017     per_row = varargin{2};
+0018 <span class="keyword">end</span>
+0019 view_rot = eye(3);
+0020 <span class="keyword">if</span>( nargin &gt;=6 )
+0021     view_rot = varargin{3};
+0022 <span class="keyword">end</span>
+0023 offset = 3.0; 
+0024 <span class="keyword">if</span>( nargin &gt;=7 )
+0025     offset = varargin{4};
+0026 <span class="keyword">end</span>
+0027 reference = 1;
+0028 <span class="keyword">if</span>( nargin &gt;= 8 )
+0029     reference = varargin{5};
+0030 <span class="keyword">end</span>
+0031 
+0032 
+0033 <span class="comment">%Create vertices and faces of the resulting off file</span>
+0034 
+0035 V=[]; F=[];
+0036 <span class="keyword">for</span> ii = 1 : length( inds )
+0037     <span class="keyword">if</span> ( det( ga.R{ inds(ii) } ) &lt; 0 ) <span class="comment">% Need to invert faces orientation</span>
+0038         F = [ F ( ds.shape{ inds(ii) }.lowres.F([2 1 3],:) + size(V,2) ) ];
+0039     <span class="keyword">else</span>
+0040         F = [ F ( ds.shape{ inds(ii)}.lowres.F + size(V,2) ) ];
+0041     <span class="keyword">end</span>
+0042     r = floor( (ii-1) / per_row );
+0043     c = (ii-1) - r * per_row;
+0044     V = [V ( view_rot * ga.R{ inds(ii) } * ds.shape{ inds(ii) }.lowres.V * (ds.shape{inds(ii)}.scale/sqrt(ds.N(ds.K)))<span class="keyword">...</span>
+0045         + repmat( [ offset*c 0 offset*r ]' , 1, size( ds.shape{ inds(ii) }.lowres.V , 2 ) ) )];
+0046 <span class="comment">%     alignedV = ga.R{ inds(ii) } * (ds.shape{ inds(ii) }.origV-repmat(ds.shape{ inds(ii) }.center, 1, size(ds.shape{ inds(ii) }.origV,2)))+repmat(ds.shape{ inds(ii) }.center, 1, size(ds.shape{ inds(ii) }.origV,2));</span>
+0047     alignedV = ga.R{ inds(ii) } * (center(ds.shape{ inds(ii) }.origV)/scale(center(ds.shape{ inds(ii) }.origV)));
+0048     write_obj([ds.msc.mesh_aligned_dir ds.names{ inds(ii) } <span class="string">'_aligned.obj'</span>], alignedV, ds.shape{ inds(ii) }.origF);
+0049 <span class="comment">%     write_off([ds.msc.mesh_aligned_dir ds.names{ inds(ii) } '_aligned.off'], alignedV, ds.shape{ inds(ii) }.origF);</span>
+0050 <span class="comment">%     V = [ V ( view_rot * ga.R{ inds(ii) } * ds.shape{ inds(ii) }.lowres.V + repmat( [ offset*c 0 offset*r ]' , 1, size( ds.shape{ inds(ii) }.lowres.V , 2 ) ) ) ];</span>
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">%%% Add a cube to mark shape number 1</span>
+0054 <span class="comment">%%% tg -- maybe uncomment this block back?</span>
+0055 <span class="comment">% if( reference )</span>
+0056 <span class="comment">%     center = @(X) X-repmat(mean(X,2),1,size(X,2));</span>
+0057 <span class="comment">%     tmpV = center([1 1 1 ; -1 1 -1 ; -1 -1 1 ; 1 -1 -1]');</span>
+0058 <span class="comment">%     tmpF = [0 1 2 ; 0 2 3 ; 0 3 1 ; 3 2 1]'+1 ; % Have to be 1-indexed</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%     F = [ F tmpF + size(V,2) ];</span>
+0061 <span class="comment">%     V = [ V ( tmpV     - repmat( [ offset 0 offset ]' , 1 , size(tmpV,2) ) ) ];</span>
+0062 <span class="comment">%     F = [ F tmpF + size(V,2) ];</span>
+0063 <span class="comment">%     V = [ V ( 0.5*tmpV - repmat( [ 0 0 offset ]' , 1 , size(tmpV,2) ) ) ];</span>
+0064 <span class="comment">% end</span>
+0065 
+0066 write_off(filename,V,F);
+0067 
+0068 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

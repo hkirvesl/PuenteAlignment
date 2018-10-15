@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of write_files_aligned</title>
+  <meta name="keywords" content="write_files_aligned">
+  <meta name="description" content="Write aligned offs, e.g. for Kate's analysis">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; write_files_aligned.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>write_files_aligned
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Write aligned offs, e.g. for Kate's analysis</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function write_files_aligned( ds , ga, input_dir, output_dir, type, scale) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Write aligned offs, e.g. for Kate's analysis
+ Note: ply is VERY slow because of write_ply</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function write_files_aligned( ds , ga, input_dir, output_dir, type, scale)</a>
+0002 <span class="comment">% Write aligned offs, e.g. for Kate's analysis</span>
+0003 <span class="comment">% Note: ply is VERY slow because of write_ply</span>
+0004 
+0005 <span class="keyword">for</span> kk = 1: ds.n
+0006     <span class="comment">% Read original off file</span>
+0007     [V,F] = read_off( [input_dir ds.ids{ kk } <span class="string">'.off'</span> ] );
+0008     <span class="comment">%Scale according to highest resolution point cloud</span>
+0009     V = V-repmat(ds.shape{kk}.center,1,size(V,2));
+0010     <span class="keyword">if</span>( scale )
+0011         V = V / ( ds.shape{kk}.scale / sqrt( ds.N( ds.K ) ) );
+0012     <span class="keyword">end</span>
+0013     
+0014     <span class="comment">%Rotate according to ga</span>
+0015     <span class="keyword">if</span> ( det( ga.R{ kk } ) &lt; 0 ) <span class="comment">% Need to invert faces orientation</span>
+0016         F = F([2 1 3],:);
+0017     <span class="keyword">end</span>
+0018     V = ga.R{ kk } * V ;
+0019     
+0020     <span class="comment">%Write output</span>
+0021     <span class="keyword">if</span>( strcmp(type,<span class="string">'off'</span>) )
+0022         write_off( [output_dir ds.ids{kk} <span class="string">'.off'</span>], V, F);
+0023     <span class="keyword">elseif</span>( strcmp(type,<span class="string">'ply'</span>))
+0024         write_ply(V,F,[output_dir ds.ids{kk} <span class="string">'.ply'</span>]);
+0025     <span class="keyword">else</span>
+0026         error(<span class="string">'Unrecognized file format'</span>);
+0027     <span class="keyword">end</span>
+0028     
+0029     display( [ <span class="string">'Shape '</span> num2str( kk ) <span class="string">' done. '</span>] );
+0030 <span class="keyword">end</span>
+0031 
+0032     
+0033 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

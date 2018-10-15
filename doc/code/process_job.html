@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of process_job</title>
+  <meta name="keywords" content="process_job">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; process_job.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>process_job
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function process_job( ifn, ofn, ffn ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>	Computes optimal rotation and permutation for true entries of A</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function process_job( ifn, ofn, ffn )</a>
+0002 
+0003 <span class="keyword">if</span> ~exist(ofn,<span class="string">'file'</span>)
+0004     load(ifn, <span class="string">'pa_tmp'</span>);
+0005     load(ffn, <span class="string">'f'</span>);
+0006     [r,c] = find (pa_tmp.A); <span class="comment">% Determine which entries are to be computed</span>
+0007     <span class="keyword">for</span> ii = 1 : length( r );
+0008         display([<span class="string">'-------&gt; Processing '</span> num2str( r(ii), <span class="string">'%.3d'</span> ) <span class="string">' and '</span> num2str( c(ii), <span class="string">'%.3d'</span> ) ]);
+0009         [ pa_tmp.d(r(ii),c(ii)), pa_tmp.R{r(ii),c(ii)}, pa_tmp.P{r(ii),c(ii)}, pa_tmp.gamma(r(ii),c(ii)) ] = f ( r(ii), c(ii) );
+0010         pa_tmp.d    (c(ii), r(ii) ) = pa_tmp.d    (r(ii), c(ii));
+0011         pa_tmp.R    {c(ii), r(ii) } = pa_tmp.R    {r(ii), c(ii)}';
+0012         pa_tmp.P    {c(ii), r(ii) } = pa_tmp.P    {r(ii), c(ii)}';
+0013         pa_tmp.gamma(c(ii), r(ii) ) = pa_tmp.gamma(r(ii), c(ii));
+0014     <span class="keyword">end</span>
+0015     save(ofn,<span class="string">'pa_tmp'</span>);
+0016 <span class="keyword">else</span>
+0017    display([<span class="string">'File '</span> ofn <span class="string">' already existed, skipping...'</span>]);    
+0018 <span class="keyword">end</span>
+0019 
+0020 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

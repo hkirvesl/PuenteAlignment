@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of main</title>
+  <meta name="keywords" content="main">
+  <meta name="description" content="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; main.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>main
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PuenteAlignment package, Jesus Puente (jparrubarrena@gmail.com)
+%% Please cite:
+%% 1. Jesus Puente, &quot;Distances and Algorithms to Compare Shapes, with
+%%    Applications to Biological Morphometrics&quot;, Ph.D. Thesis, Princeton
+%%    University, September 2013
+%% 2. Boyer, Doug M., et al. &quot;A New Fully Automated Approach for Aligning
+%%    and Comparing Shapes&quot;, The Anatomical Record 298.1 (2015): 249-276.
+%%
+%% Currently maintained by Tingran Gao (trgao10@math.duke.edu)
+%% last modified: Feb 14, 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% INSTRUCTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Step 1: specify &quot;meshesPath&quot; and &quot;outputPath&quot; in file &quot;jadd_path.m&quot;
+%% Step 2: Set other parameters in script &quot;jadd_path.m&quot;. You must keep
+%%         iniNumPts &lt; finNumPts; often one sets iniNumPts &lt;&lt; finNumPts
+%% Step 3: Click &quot;Run&quot; or press F5
+%% Step 4: After the program terminates, go to the output folder for
+%%         results. morphologika.txt aligns the data set with iniNumPts
+%%         pseudolandmakrs on each mesh, while morphologika_2.txt aligns
+%%         the data set with finNumPts pseudolandmarks.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>	Computes optimal rotation and permutation for true entries of A</li><li><a href="getFileNames.html" class="code" title="function [fileNameList, suffix] = getFileNames(pathName)">getFileNames</a>	GETFILES Summary of this function goes here</li><li><a href="get_subsampled_shape.html" class="code" title="function X = get_subsampled_shape( dir , id , N )">get_subsampled_shape</a>	Read already subsampled file, if it exists</li><li><a href="globalize.html" class="code" title="function ga = globalize( pa , tree , base)">globalize</a>	Takes a pairwise alignment (pa) and a tree and returns</li><li><a href="gpd.html" class="code" title="function [ d, R, P, gamma ] = gpd ( X, Y, max_iter, ref )">gpd</a>	Generalized Procrustes Distance</li><li><a href="hausdorff.html" class="code" title="function [d , iargX, iargY] = hausdorff( X , Y )">hausdorff</a>	Compute the Hausdorff distance using euclidean distances between</li><li><a href="jadd_path.html" class="code" title="">jadd_path</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li><li><a href="jprocrustes.html" class="code" title="function [R, d] = jprocrustes(x, y)">jprocrustes</a>	Computes the best rotation that when applied to</li><li><a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>	Output:</li><li><a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>	Takes a global alignment and returns a pairwise one</li><li><a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>	Local Generalized Procrustes Distance function</li><li><a href="plot_tree.html" class="code" title="function plot_tree ( dissimilarity, tree, names, method, classes, jtitle )">plot_tree</a>	Embed points with given dissimilarity and simultaneously plot</li><li><a href="reduce.html" class="code" title="function pa = reduce(ds, pa, n_jobs )">reduce</a>	Rebuild the original pa based on the answers of the n_jobs</li><li><a href="touch.html" class="code" title="function touch(dir_string)">touch</a>	TOUCH Summary of this function goes here</li><li><a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>	Creates a sparse square matrix with 1's above the diagonal,</li><li><a href="write_morphologika.html" class="code" title="function write_morphologika(filename , ds , ga , varargin)">write_morphologika</a>	Write shape information to a Morphologika file</li><li><a href="write_off_global_alignment.html" class="code" title="function write_off_global_alignment( filename, ds, ga, varargin )">write_off_global_alignment</a>	Write an off file with the shapes in ds aligned according</li><li><a href="write_off_placed_shapes.html" class="code" title="function write_off_placed_shapes( filename, coords, ds , ga, varargin )">write_off_placed_shapes</a>	Write off file with the meshes in their respective locations according</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0002 <span class="comment">%%% PuenteAlignment package, Jesus Puente (jparrubarrena@gmail.com)</span>
+0003 <span class="comment">%%% Please cite:</span>
+0004 <span class="comment">%%% 1. Jesus Puente, &quot;Distances and Algorithms to Compare Shapes, with</span>
+0005 <span class="comment">%%%    Applications to Biological Morphometrics&quot;, Ph.D. Thesis, Princeton</span>
+0006 <span class="comment">%%%    University, September 2013</span>
+0007 <span class="comment">%%% 2. Boyer, Doug M., et al. &quot;A New Fully Automated Approach for Aligning</span>
+0008 <span class="comment">%%%    and Comparing Shapes&quot;, The Anatomical Record 298.1 (2015): 249-276.</span>
+0009 <span class="comment">%%%</span>
+0010 <span class="comment">%%% Currently maintained by Tingran Gao (trgao10@math.duke.edu)</span>
+0011 <span class="comment">%%% last modified: Feb 14, 2016</span>
+0012 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0013 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0014 <span class="comment">%%% INSTRUCTIONS</span>
+0015 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0016 <span class="comment">%%% Step 1: specify &quot;meshesPath&quot; and &quot;outputPath&quot; in file &quot;jadd_path.m&quot;</span>
+0017 <span class="comment">%%% Step 2: Set other parameters in script &quot;jadd_path.m&quot;. You must keep</span>
+0018 <span class="comment">%%%         iniNumPts &lt; finNumPts; often one sets iniNumPts &lt;&lt; finNumPts</span>
+0019 <span class="comment">%%% Step 3: Click &quot;Run&quot; or press F5</span>
+0020 <span class="comment">%%% Step 4: After the program terminates, go to the output folder for</span>
+0021 <span class="comment">%%%         results. morphologika.txt aligns the data set with iniNumPts</span>
+0022 <span class="comment">%%%         pseudolandmakrs on each mesh, while morphologika_2.txt aligns</span>
+0023 <span class="comment">%%%         the data set with finNumPts pseudolandmarks.</span>
+0024 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0025 
+0026 <span class="comment">%% set path and preparation</span>
+0027 <a href="jadd_path.html" class="code" title="">jadd_path</a>;
+0028 
+0029 <span class="keyword">if</span> (restart == 1)
+0030     system([<span class="string">'rm -rf '</span> outputPath]);
+0031     system([<span class="string">'mkdir '</span> outputPath]);
+0032 <span class="keyword">end</span>
+0033 
+0034 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'original/'</span>]);
+0035 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'subsampled/'</span>]);
+0036 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'aligned/'</span>]);
+0037 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'jobs/'</span>]);
+0038 set(0,<span class="string">'RecursionLimit'</span>,1500);
+0039 
+0040 <span class="comment">%% Information and parameters</span>
+0041 ds.N       = [iniNumPts, finNumPts];  <span class="comment">% Number of points to spread</span>
+0042 ds.dataset = <span class="string">''</span>; <span class="comment">% Used for pulling the files containing the meshes</span>
+0043 ds.run     = <span class="string">''</span>;     <span class="comment">% Used for writing output and intermediate files</span>
+0044 [ds.names, suffix] = <a href="getFileNames.html" class="code" title="function [fileNameList, suffix] = getFileNames(pathName)">getFileNames</a>(meshesPath);
+0045 ds.ids     = arrayfun(@(x) sprintf(<span class="string">'%03d'</span>, x), 1:length(ds.names), <span class="string">'UniformOutput'</span>, 0);
+0046 cellfun(@(a,b) copyfile(a,b),<span class="keyword">...</span>
+0047     cellfun(@(x) [meshesPath x suffix], ds.names, <span class="string">'UniformOutput'</span>, 0),<span class="keyword">...</span>
+0048     cellfun(@(x) [outputPath <span class="string">'original/'</span> x suffix], ds.ids, <span class="string">'UniformOutput'</span>, 0));
+0049 
+0050 <span class="comment">%% paths to be passed as global constants</span>
+0051 ds.n                = length( ds.ids ); <span class="comment">%Number of shapes</span>
+0052 ds.K                = length( ds.N ); <span class="comment">%Number of levels</span>
+0053 ds.msc.mesh_dir     = meshesPath;
+0054 ds.msc.output_dir   = outputPath;
+0055 ds.msc.mesh_aligned_dir = [outputPath <span class="string">'aligned/'</span>];
+0056 
+0057 <span class="comment">%% Useful lambda functions</span>
+0058 center = @(X) X-repmat(mean(X,2),1,size(X,2));
+0059 scale  = @(X) norm(center(X),<span class="string">'fro'</span>) ;
+0060 
+0061 <span class="comment">%% Initialization</span>
+0062 <span class="comment">% 1. Fill in X with subsampled shapes</span>
+0063 <span class="comment">% 2. Center and standardize them</span>
+0064 <span class="comment">% 3. Compute Singular Value Decompositions and other useful quantities</span>
+0065 ds.shape = cell ( 1, ds.n );
+0066 disp(<span class="string">'Subsampling meshes...'</span>);
+0067 <span class="keyword">for</span> ii = 1 : ds.n
+0068     progressbar(ii, ds.n, 20);
+0069     [ds.shape{ ii }.origV, ds.shape{ ii }.origF] = read_off([meshesPath ds.names{ii} suffix]);
+0070     ds.shape{ ii }.X              = cell( 1, ds.K );
+0071     ds.shape{ ii }.X{ ds.K }      = <a href="get_subsampled_shape.html" class="code" title="function X = get_subsampled_shape( dir , id , N )">get_subsampled_shape</a>( outputPath, ds.ids{ii} , ds.N( ds.K ) );
+0072     ds.shape{ ii }.center         = mean(  ds.shape{ ii }.X{ ds.K }, 2 );
+0073     ds.shape{ ii }.scale          = scale( ds.shape{ ii }.X{ ds.K } );
+0074     ds.shape{ ii }.epsilon        = zeros( 1, ds.K );
+0075     <span class="keyword">for</span> kk = 1 : ds.K
+0076         ds.shape{ ii }.X{kk}     = ds.shape{ii}.X{ ds.K }(:, 1:ds.N( kk ) );
+0077         ds.shape{ ii }.X{kk}     = center(  ds.shape{ii}.X{kk} ) / scale(  ds.shape{ii}.X{kk} ) ;
+0078         [ ds.shape{ ii }.U_X{kk} , tmpD_X , tmpV_X ] = svd( ds.shape{ii}.X{kk} );
+0079         ds.shape{ ii }.D_X{kk}   = diag( tmpD_X );
+0080         ds.shape{ ii }.V_X{kk}   = tmpV_X(:,1:3);
+0081     <span class="keyword">end</span>
+0082     <span class="keyword">for</span> kk = 2 : ds.K
+0083        ds.shape{ ii }.epsilon(kk) = 1.0001*<a href="hausdorff.html" class="code" title="function [d , iargX, iargY] = hausdorff( X , Y )">hausdorff</a>( ds.shape{ii}.X{kk}(:,1:ds.N(kk-1)), ds.shape{ii}.X{kk} );
+0084        ds.shape{ ii }.neigh{ kk } = <a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>(ds.shape{ii}.X{kk}(:,1:ds.N(kk-1)), ds.shape{ii}.X{kk} , ds.shape{ii}.epsilon(kk));
+0085     <span class="keyword">end</span>
+0086 <span class="keyword">end</span>
+0087 disp(<span class="string">'Done'</span>);
+0088 
+0089 <span class="comment">%Read the low resolution files, these are used for display puposes only</span>
+0090 <span class="keyword">for</span> ii = 1 : ds.n
+0091     <span class="comment">%Read the files</span>
+0092     lowres_off_fn = [outputPath <span class="string">'subsampled'</span> filesep ds.ids{ii} <span class="string">'.off'</span>];
+0093     <span class="keyword">if</span> exist( lowres_off_fn , <span class="string">'file'</span> )
+0094         [ds.shape{ ii }.lowres.V ,ds.shape{ ii }.lowres.F] = read_off(lowres_off_fn);
+0095     <span class="keyword">else</span>
+0096         error([<span class="string">'Cannot find low resolution file '</span> lowres_off_fn ]);
+0097     <span class="keyword">end</span>
+0098     <span class="comment">%Scale according to highest resolution point cloud</span>
+0099     ds.shape{ii}.lowres.V = ds.shape{ii}.lowres.V-repmat(ds.shape{ii}.center,1,size(ds.shape{ii}.lowres.V,2));
+0100     ds.shape{ii}.lowres.V = ds.shape{ii}.lowres.V / ( ds.shape{ii}.scale / sqrt( ds.N( ds.K ) ) );
+0101 <span class="keyword">end</span>
+0102 
+0103 <span class="comment">%% Alignment</span>
+0104 <span class="comment">% 'pa' stands for pairwise alignment</span>
+0105 <span class="comment">% 1. Compute a pairwise alignment of all pairs, then compute minimum</span>
+0106 <span class="comment">%    spanning tree</span>
+0107 k = 1;
+0108 pa.A          = <a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>( ds.n ); <span class="comment">% a 1 entry in this matrix indicates the pairwise distance should be computed</span>
+0109 <span class="comment">% pa.L          = 8; % Number of positions to test, the first 8 are the 8 possibilities for aligning the principal axes</span>
+0110 pa.max_iter   = max_iter;
+0111 pa.allow_reflection = allow_reflection;
+0112 f             = @( ii , jj ) <a href="gpd.html" class="code" title="function [ d, R, P, gamma ] = gpd ( X, Y, max_iter, ref )">gpd</a>( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.max_iter, pa.allow_reflection );
+0113 pa.pfj        = [ds.msc.output_dir <span class="string">'jobs/low/'</span>];
+0114 pa.codePath   = codePath;
+0115 pa.email_notification = email_notification;
+0116 
+0117 <span class="comment">% Break up all the pairwise distances into a a bunch of parallel tasks,</span>
+0118 <span class="comment">% to be computed either in the same machine or in different ones</span>
+0119 <span class="comment">% Remember to remove all previous jobs in the output/jobs folder!</span>
+0120 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>(pa.pfj);
+0121 pa = <a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>( pa, f, n_jobs, use_cluster );
+0122 
+0123 pa = <a href="reduce.html" class="code" title="function pa = reduce(ds, pa, n_jobs )">reduce</a>( ds, pa, n_jobs );
+0124 
+0125 <span class="comment">%% Globalization</span>
+0126 <span class="comment">% 'ga' stands for global alignment</span>
+0127 mst     = graphminspantree( sparse( pa.d + pa.d' ) );
+0128 ga      = <a href="globalize.html" class="code" title="function ga = globalize( pa , tree , base)">globalize</a>( pa, mst+mst', 2 ); 
+0129 ga.k    = k;
+0130 
+0131 <a href="plot_tree.html" class="code" title="function plot_tree ( dissimilarity, tree, names, method, classes, jtitle )">plot_tree</a>( pa.d+pa.d', mst, ds.names, <span class="string">'mds'</span>, ones(1,ds.n),<span class="string">''</span>);
+0132 
+0133 <span class="comment">%% Output low resolution</span>
+0134 theta = pi/2; <span class="comment">% Useful for rotating files to look nicer</span>
+0135 <a href="write_off_global_alignment.html" class="code" title="function write_off_global_alignment( filename, ds, ga, varargin )">write_off_global_alignment</a>( [ds.msc.output_dir <span class="string">'alignment_low.off'</span> ], ds, ga, 1:ds.n, 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}', 3.0, 1);
+0136 <a href="write_morphologika.html" class="code" title="function write_morphologika(filename , ds , ga , varargin)">write_morphologika</a>( [ds.msc.output_dir <span class="string">'morphologika_unscaled_low.txt'</span>], ds, ga );
+0137 <span class="comment">% theta=pi/2; % Useful for rotating files to look nicer</span>
+0138 <span class="comment">% write_off_global_alignment( [ds.msc.output_dir 'alignment.off' ], ds , ga , [1:ds.n], 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}',3.0,1);</span>
+0139 <span class="comment">% write_morphologika( [ds.msc.output_dir 'morphologika_unscaled.txt' ], ds, ga );</span>
+0140 save( [ ds.msc.output_dir <span class="string">'session.mat'</span> ] , <span class="string">'ds'</span>, <span class="string">'pa'</span>, <span class="string">'ga'</span>, <span class="string">'mst'</span> );
+0141 
+0142 <span class="comment">%% Compute the edges in the MST with higher number of points</span>
+0143 pa_tmp = <a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>( ga );
+0144 pa.R = pa_tmp.R;
+0145 
+0146 k         = 2; <span class="comment">% Which level to run next</span>
+0147 pa.A      = <a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>( ds.n );
+0148 pa.pfj    = [ds.msc.output_dir <span class="string">'jobs/high/'</span>]; <span class="comment">% 'pfj' stands for path for jobs</span>
+0149 tmpR  = pa.R;
+0150 tmpP  = pa.P;
+0151 f   = @( ii , jj ) <a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.R{ii,jj}, ones(ds.N(k)), pa.max_iter );
+0152 
+0153 <span class="comment">% Remember to remove all previous jobs in the output/jobs folder!</span>
+0154 <span class="comment">% system(['rm -rf ' pa.pfj '/*']);</span>
+0155 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>(pa.pfj);
+0156 pa = <a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>( pa, f, n_jobs, use_cluster );
+0157 
+0158 pa = <a href="reduce.html" class="code" title="function pa = reduce(ds, pa, n_jobs )">reduce</a>( ds, pa, n_jobs );
+0159 
+0160 <span class="comment">%% Globalization</span>
+0161 <span class="comment">% mst is the same as before</span>
+0162 ga     = <a href="globalize.html" class="code" title="function ga = globalize( pa , tree , base)">globalize</a>( pa, mst , 1 );
+0163 ga.k   = k;
+0164 
+0165 <span class="comment">%% Output higher resolution</span>
+0166 <a href="write_off_global_alignment.html" class="code" title="function write_off_global_alignment( filename, ds, ga, varargin )">write_off_global_alignment</a>( [ds.msc.output_dir <span class="string">'alignment_high.off'</span> ], ds , ga, [1:ds.n], 10, [cos(theta) -sin(theta) 0 ; sin(theta) cos(theta) 0; 0 0 1]*[ 0 0 1; 0 -1 0; 1 0 0]*ds.shape{1}.U_X{k}',3.0,1);
+0167 <a href="write_morphologika.html" class="code" title="function write_morphologika(filename , ds , ga , varargin)">write_morphologika</a>( [ds.msc.output_dir <span class="string">'morphologika_unscaled_high.txt'</span> ], ds, ga );
+0168 save( [ ds.msc.output_dir <span class="string">'session_2.mat'</span> ] , <span class="string">'ds'</span>, <span class="string">'pa'</span>, <span class="string">'ga'</span>, <span class="string">'mst'</span> );
+0169 
+0170 <span class="comment">%% Compute all pairwise Procrustes distances</span>
+0171 proc_d     = zeros( ds.n , ds.n );
+0172 <span class="keyword">for</span> ii = 1 : ds.n
+0173     <span class="keyword">for</span> jj = ii : ds.n
+0174         <span class="keyword">if</span>( ii == jj )
+0175             <span class="keyword">continue</span>;
+0176         <span class="keyword">end</span>
+0177         [tmpR, proc_d( ii, jj)] = <a href="jprocrustes.html" class="code" title="function [R, d] = jprocrustes(x, y)">jprocrustes</a>( ds.shape{ii}.X{k}*ga.P{ii} , ds.shape{jj}.X{k}*ga.P{jj} );
+0178     <span class="keyword">end</span>
+0179 <span class="keyword">end</span>
+0180 mst_proc_d = graphminspantree( sparse( proc_d + proc_d' ) );
+0181 <a href="plot_tree.html" class="code" title="function plot_tree ( dissimilarity, tree, names, method, classes, jtitle )">plot_tree</a>( proc_d+proc_d' , mst_proc_d , ds.names , <span class="string">'mds'</span>, ones(1,ds.n) , <span class="string">'MDS procrustes distances'</span> );
+0182 
+0183 proc_d=(proc_d+proc_d')/2;
+0184 coords=mdscale(proc_d,3)';
+0185 <a href="write_off_placed_shapes.html" class="code" title="function write_off_placed_shapes( filename, coords, ds , ga, varargin )">write_off_placed_shapes</a>( [ds.msc.output_dir <span class="string">'map.off'</span> ], coords, ds, ga, eye(3), mst_proc_d);
+0186 
+0187 disp(<span class="string">'Alignment Completed'</span>);</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
