@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of temp_make_plots</title>
+  <meta name="keywords" content="temp_make_plots">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; temp_make_plots.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>temp_make_plots
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>	Takes a global alignment and returns a pairwise one</li><li><a href="plot_point_correspondence.html" class="code" title="function plot_point_correspondence(X,Y,Rot)">plot_point_correspondence</a>	Plots point correspondences between shapes</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 ii = 8; jj=76; k=2;
+0002 <span class="comment">% Global alignment</span>
+0003 <a href="plot_point_correspondence.html" class="code" title="function plot_point_correspondence(X,Y,Rot)">plot_point_correspondence</a>(ga.R{ii}*ds.shape{ii}.X{k}, ga.R{jj}*ds.shape{jj}.X{2}*ga.P{jj}, eye(3));
+0004 
+0005 <span class="comment">% Local alignment</span>
+0006 <a href="plot_point_correspondence.html" class="code" title="function plot_point_correspondence(X,Y,Rot)">plot_point_correspondence</a>(ds.shape{ii}.X{k},ds.shape{jj}.X{k}*pa.P{ii,jj},  pa.R{ii,jj});
+0007 
+0008 <span class="comment">%Side by side</span>
+0009 figure; hold on;
+0010 plot_mesh(ds.shape{ii}.lowres.V, ds.shape{ii}.lowres.F);
+0011 plot_mesh(pa.R{ii,jj}*ds.shape{jj}.lowres.V + repmat( [2 0 0]', 1, size(ds.shape{jj}.lowres.V,2) ), ds.shape{jj}.lowres.F);
+0012 title(<span class="string">'Pairwise'</span>);
+0013 
+0014 <span class="comment">%</span>
+0015 figure; hold on;
+0016 plot_mesh(ds.shape{ii}.lowres.V, ds.shape{ii}.lowres.F);
+0017 plot_mesh(pa.R{ii,jj}*ds.shape{jj}.lowres.V + repmat( [2 0 0]', 1, size(ds.shape{jj}.lowres.V,2) ), ds.shape{jj}.lowres.F);
+0018 title(<span class="string">'Global'</span>);
+0019 
+0020 
+0021 <span class="comment">% Lets find the ga and pa that differ</span>
+0022 tmppa = <a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>(ga);
+0023 <span class="comment">%pa is the pairwise alignments</span>
+0024 Rdist = zeros( ds.n, ds.n);
+0025 <span class="keyword">for</span> ii=1:ds.n -1
+0026     <span class="keyword">for</span> jj= ii+1 : ds.n
+0027          Rdist(ii,jj) = real(acos(trace(tmppa.R{ii,jj}*pa.R{ii,jj}'/3)));
+0028     <span class="keyword">end</span>
+0029 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of compute_alignment</title>
+  <meta name="keywords" content="compute_alignment">
+  <meta name="description" content="Computes optimal rotation and permutation for true entries of A">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; compute_alignment.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>compute_alignment
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Computes optimal rotation and permutation for true entries of A</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function pa = compute_alignment( pa, f, n_jobs, use_cluster ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Computes optimal rotation and permutation for true entries of A
+ al must contain a sparse matrix A indicating which entries are to be
+ computed
+ al must also implement a function save()
+ f must take two integers and return [d,R,P,gamma]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="map.html" class="code" title="function map( pa, f, n_jobs )">map</a>	Create .mat files for n_jobs number of jobs from variable pa</li><li><a href="process_job.html" class="code" title="function process_job( ifn, ofn, ffn )">process_job</a>	</li><li><a href="submit_jobs.html" class="code" title="function submit_jobs( pa, n_jobs )">submit_jobs</a>	Send jobs to the cluster</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clusterMapHighRes.html" class="code" title="">clusterMapHighRes</a>	% set path and preparation</li><li><a href="clusterMapLowRes.html" class="code" title="">clusterMapLowRes</a>	% set path and preparation</li><li><a href="main.html" class="code" title="">main</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pa = compute_alignment( pa, f, n_jobs, use_cluster )</a>
+0002 <span class="comment">% Computes optimal rotation and permutation for true entries of A</span>
+0003 <span class="comment">% al must contain a sparse matrix A indicating which entries are to be</span>
+0004 <span class="comment">% computed</span>
+0005 <span class="comment">% al must also implement a function save()</span>
+0006 <span class="comment">% f must take two integers and return [d,R,P,gamma]</span>
+0007 
+0008 n          = size( pa.A , 2 );
+0009 
+0010 <a href="map.html" class="code" title="function map( pa, f, n_jobs )">map</a>( pa, f, n_jobs ); <span class="comment">% Save n_jobs files to be processed</span>
+0011 
+0012 <span class="keyword">if</span>( use_cluster == 0 )
+0013    <span class="keyword">for</span> kk = 0 : n_jobs - 1
+0014       <a href="process_job.html" class="code" title="function process_job( ifn, ofn, ffn )">process_job</a>([pa.pfj <span class="string">'job_'</span> num2str(kk,<span class="string">'%.4d'</span>) <span class="string">'.mat'</span>], [ pa.pfj <span class="string">'ans_'</span> num2str(kk,<span class="string">'%.4d'</span>) <span class="string">'.mat'</span>], [pa.pfj <span class="string">'f.mat'</span>]);
+0015    <span class="keyword">end</span>
+0016 <span class="keyword">else</span>
+0017     <span class="comment">%Write script files and submit them</span>
+0018     <a href="submit_jobs.html" class="code" title="function submit_jobs( pa, n_jobs )">submit_jobs</a>( pa , n_jobs );
+0019 <span class="keyword">end</span>
+0020     
+0021 <span class="comment">%</span>
+0022 <span class="comment">% if( exist( pa.savefn , 'file' ) )</span>
+0023 <span class="comment">%     load( pa.savefn , 'pa' ); % load progress</span>
+0024 <span class="comment">% else</span>
+0025 <span class="comment">%     pa.d          = zeros( ds.n );</span>
+0026 <span class="comment">%     pa.R          = cell( ds.n, ds.n );</span>
+0027 <span class="comment">%     pa.P          = cell( ds.n, ds.n );</span>
+0028 <span class="comment">%     pa.gamma      = zeros( ds.n );</span>
+0029 <span class="comment">%     %Below is attempt to run in cluster, it is for functions map,</span>
+0030 <span class="comment">%     %submit_jobs and reduce</span>
+0031 <span class="comment">%     %     pa.pfj        = [ds.msc.output_dir 'jobs/'];</span>
+0032 <span class="comment">%     %     pa.id         = randi(10000000000);</span>
+0033 <span class="comment">%     %     pa.nnz        = nnz( pa.A );</span>
+0034 <span class="comment">%     %     pa.n_jobs     = 2;</span>
+0035 <span class="comment">% end</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%</span>
+0038 
+0039</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of linassign</title>
+  <meta name="keywords" content="linassign">
+  <meta name="description" content="Linear assignment problem">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; linassign.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>linassign
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Linear assignment problem</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ P, d, n_vars] = linassign( A , D ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Linear assignment problem
+ In the case of Procrustes distance, notice that chancer are you want to pass D as a distance SQUARED
+ and you want to take the SQUARE ROOT after you call this function
+ The Output P is a permutation matrix such that Y*P has indices aligned
+ with those of X in our Generalized Procrustes Distance Framework.
+ This differs from saying that P(i,j)=1 if point i in X corresponds to point j
+ in Y. In order to get the latter, P would need to be transposed.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>	Local Generalized Procrustes Distance function</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ P, d, n_vars] = linassign( A , D )</a>
+0002 <span class="comment">% Linear assignment problem</span>
+0003 <span class="comment">% In the case of Procrustes distance, notice that chancer are you want to pass D as a distance SQUARED</span>
+0004 <span class="comment">% and you want to take the SQUARE ROOT after you call this function</span>
+0005 <span class="comment">% The Output P is a permutation matrix such that Y*P has indices aligned</span>
+0006 <span class="comment">% with those of X in our Generalized Procrustes Distance Framework.</span>
+0007 <span class="comment">% This differs from saying that P(i,j)=1 if point i in X corresponds to point j</span>
+0008 <span class="comment">% in Y. In order to get the latter, P would need to be transposed.</span>
+0009 <span class="comment">%</span>
+0010 
+0011 N     = size( A, 1 );
+0012 
+0013 <span class="keyword">if</span> (  A == ones ( N , N ) )
+0014     <span class="comment">%     [tmpP, d] = munkres(D);</span>
+0015     <span class="comment">%Use Hungarian Algorithm, Buehren's implementation</span>
+0016     [tmpP, d] = assignmentoptimal( D );
+0017     P = sparse( 1:N, tmpP, ones(1,N) );
+0018     P = P';
+0019     n_vars = N * N;
+0020 <span class="keyword">else</span>
+0021     tmpD  = reshape( D, N*N, 1);
+0022     ivars = find( A );
+0023     n_vars= length(ivars);
+0024     
+0025     <span class="comment">%Build equality constrains for all (useful and useless) variables, we will</span>
+0026     <span class="comment">%reduce it later</span>
+0027     Aeq = [ kron( speye(N), ones(1,N) ) ; kron( ones(1,N) , speye(N) ) ];
+0028     
+0029     <span class="comment">%Reduce the number of variables using ivars</span>
+0030     Aeq_red = Aeq(:,ivars);
+0031     dissimilarity_for_lp_red = tmpD(ivars);
+0032     
+0033     <span class="comment">%Positivity constrain and rhs of equality constrains</span>
+0034     lb_red  = sparse(length(ivars),1);
+0035     beq     = sparse(ones(2*N,1));
+0036     
+0037     <span class="comment">%Solve linear program</span>
+0038     prob.c = dissimilarity_for_lp_red;
+0039     prob.a = Aeq_red;
+0040     prob.buc = beq;
+0041     prob.blc = beq;
+0042     prob.blx = lb_red;
+0043     param.MSK_IPAR_OPTIMIZER = <span class="string">'MSK_OPTIMIZER_PRIMAL_SIMPLEX'</span>;
+0044     [~,res] = mosekopt(<span class="string">'minimize echo(0)'</span>,prob,param);
+0045     P_red = res.sol.bas.xx;
+0046     d = res.sol.bas.pobjval;
+0047     
+0048 <span class="comment">%     options = optimset('Display','none');</span>
+0049 <span class="comment">%     [P_red, d]=linprog(dissimilarity_for_lp_red,[],[],Aeq_red,beq,lb_red,[],[],options);</span>
+0050     
+0051     <span class="comment">%Remove spurious (close to zero) values</span>
+0052     P_red = sparse( P_red &gt; 1e-1 );
+0053     
+0054     <span class="comment">%Expand to right size and shape</span>
+0055     <span class="comment">%tmpP          = sparse( N*N,1);</span>
+0056     <span class="comment">%tmpP(ivars,1) = P_red;</span>
+0057     tmpP          = sparse( ivars, 1, P_red , N*N , 1 );
+0058     P             = reshape(tmpP,N,N);
+0059     P             = P'; <span class="comment">% TRANSPOSE to fit the description of GPD</span>
+0060 <span class="keyword">end</span>
+0061 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

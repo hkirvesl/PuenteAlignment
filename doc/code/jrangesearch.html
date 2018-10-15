@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of jrangesearch</title>
+  <meta name="keywords" content="jrangesearch">
+  <meta name="description" content="Output:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; jrangesearch.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>jrangesearch
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Output:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ M, MD2 ] = jrangesearch ( X, Y, epsilon ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Output:
+    M   - Sparse matrix whose (i,j) entry is 1 if the distance between
+          X(:,i) and Y(:,j) is smaller than epsilon
+    MD2 - Sparse matrix whose (i,j) entry is the SQUARED distance between
+          X(:,i) and Y(:,j).
+
+    Notice it returns the squares of the distances</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clusterMapLowRes.html" class="code" title="">clusterMapLowRes</a>	% set path and preparation</li><li><a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>	Local Generalized Procrustes Distance function</li><li><a href="main.html" class="code" title="">main</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )</a>
+0002 <span class="comment">% Output:</span>
+0003 <span class="comment">%    M   - Sparse matrix whose (i,j) entry is 1 if the distance between</span>
+0004 <span class="comment">%          X(:,i) and Y(:,j) is smaller than epsilon</span>
+0005 <span class="comment">%    MD2 - Sparse matrix whose (i,j) entry is the SQUARED distance between</span>
+0006 <span class="comment">%          X(:,i) and Y(:,j).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%    Notice it returns the squares of the distances</span>
+0009 
+0010 [tmpM, tmpMD]  = rangesearch( X', Y', epsilon);
+0011 tmpind=tmpM;
+0012 <span class="keyword">for</span> kk = 1 : size(Y, 2)
+0013     tmpind{ kk } = kk * ones( 1, length( tmpind{kk} ) );
+0014 <span class="keyword">end</span>
+0015 M                = sparse( [tmpM{:}] , [tmpind{:}] , ones(1,length([tmpM{:}])), size(X,2), size(Y,2) );
+0016 MD2              = sparse( [tmpM{:}] , [tmpind{:}] , [tmpMD{:}].^2 , size(X,2) , size(Y,2) );
+0017 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

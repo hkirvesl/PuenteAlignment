@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of map</title>
+  <meta name="keywords" content="map">
+  <meta name="description" content="Create .mat files for n_jobs number of jobs from variable pa">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; map.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>map
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Create .mat files for n_jobs number of jobs from variable pa</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function map( pa, f, n_jobs ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Create .mat files for n_jobs number of jobs from variable pa</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>	Computes optimal rotation and permutation for true entries of A</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function map( pa, f, n_jobs )</a>
+0002 <span class="comment">% Create .mat files for n_jobs number of jobs from variable pa</span>
+0003 
+0004 n           = size( pa.A , 1 );
+0005 [ r, c, v ] = find( pa.A );
+0006 size_job    = ceil( nnz(pa.A) / n_jobs );
+0007 
+0008 pa_tmp = pa;
+0009 
+0010 <span class="comment">% Save pa's</span>
+0011 <span class="keyword">for</span> kk = 0 : n_jobs-1
+0012     <span class="keyword">if</span> ~exist([ pa.pfj <span class="string">'job_'</span> num2str( kk , <span class="string">'%.4d'</span> ) <span class="string">'.mat'</span> ],<span class="string">'file'</span>)
+0013         inds       = [ size_job * kk + 1 : min( size_job * ( kk + 1 ) , nnz( pa.A )  ) ];
+0014         pa_tmp.A   = sparse( r(inds) , c(inds), v(inds), n, n );
+0015         save( [ pa.pfj <span class="string">'job_'</span> num2str( kk , <span class="string">'%.4d'</span> ) ] , <span class="string">'pa_tmp'</span> );
+0016     <span class="keyword">else</span>
+0017         display([<span class="string">'File '</span> [ pa.pfj <span class="string">'job_'</span> num2str( kk , <span class="string">'%.4d'</span> ) ] <span class="string">'.mat already existed, skipping...'</span>]);
+0018     <span class="keyword">end</span>
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="comment">% Save f (always)</span>
+0022 save([pa.pfj <span class="string">'f.mat'</span>], <span class="string">'f'</span>, <span class="string">'-v7.3'</span>);
+0023</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

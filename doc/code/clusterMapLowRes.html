@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of clusterMapLowRes</title>
+  <meta name="keywords" content="clusterMapLowRes">
+  <meta name="description" content="% set path and preparation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; clusterMapLowRes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>clusterMapLowRes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% set path and preparation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% set path and preparation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>	Computes optimal rotation and permutation for true entries of A</li><li><a href="getFileNames.html" class="code" title="function [fileNameList, suffix] = getFileNames(pathName)">getFileNames</a>	GETFILES Summary of this function goes here</li><li><a href="get_subsampled_shape.html" class="code" title="function X = get_subsampled_shape( dir , id , N )">get_subsampled_shape</a>	Read already subsampled file, if it exists</li><li><a href="gpd.html" class="code" title="function [ d, R, P, gamma ] = gpd ( X, Y, max_iter, ref )">gpd</a>	Generalized Procrustes Distance</li><li><a href="hausdorff.html" class="code" title="function [d , iargX, iargY] = hausdorff( X , Y )">hausdorff</a>	Compute the Hausdorff distance using euclidean distances between</li><li><a href="jadd_path.html" class="code" title="">jadd_path</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li><li><a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>	Output:</li><li><a href="touch.html" class="code" title="function touch(dir_string)">touch</a>	TOUCH Summary of this function goes here</li><li><a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>	Creates a sparse square matrix with 1's above the diagonal,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% set path and preparation</span>
+0002 <a href="jadd_path.html" class="code" title="">jadd_path</a>;
+0003 
+0004 <span class="keyword">if</span> (restart == 1)
+0005     system([<span class="string">'rm -rf '</span> outputPath]);
+0006     system([<span class="string">'mkdir '</span> outputPath]);
+0007 <span class="keyword">end</span>
+0008 
+0009 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'original/'</span>]);
+0010 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'subsampled/'</span>]);
+0011 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'aligned/'</span>]);
+0012 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>([outputPath <span class="string">'jobs/'</span>]);
+0013 set(0,<span class="string">'RecursionLimit'</span>,1500);
+0014 
+0015 <span class="comment">%% information and parameters</span>
+0016 ds.N       = [iniNumPts, finNumPts];  <span class="comment">% Number of points to spread</span>
+0017 ds.dataset = <span class="string">''</span>; <span class="comment">% Used for pulling the files containing the meshes</span>
+0018 ds.run     = <span class="string">''</span>;     <span class="comment">% Used for writing output and intermediate files</span>
+0019 [ds.names, suffix] = <a href="getFileNames.html" class="code" title="function [fileNameList, suffix] = getFileNames(pathName)">getFileNames</a>(meshesPath);
+0020 ds.ids     = arrayfun(@(x) sprintf(<span class="string">'%03d'</span>, x), 1:length(ds.names), <span class="string">'UniformOutput'</span>, 0);
+0021 cellfun(@(a,b) copyfile(a,b),<span class="keyword">...</span>
+0022     cellfun(@(x) [meshesPath x suffix], ds.names, <span class="string">'UniformOutput'</span>, 0),<span class="keyword">...</span>
+0023     cellfun(@(x) [outputPath <span class="string">'original/'</span> x suffix], ds.ids, <span class="string">'UniformOutput'</span>, 0));
+0024 
+0025 <span class="comment">%% paths to be passed as global constants</span>
+0026 ds.n                = length( ds.ids ); <span class="comment">%Number of shapes</span>
+0027 ds.K                = length( ds.N ); <span class="comment">%Number of levels</span>
+0028 ds.msc.mesh_dir     = meshesPath;
+0029 ds.msc.output_dir   = outputPath;
+0030 ds.msc.mesh_aligned_dir = [outputPath <span class="string">'aligned/'</span>];
+0031 
+0032 <span class="comment">%% Useful lambda functions</span>
+0033 center = @(X) X-repmat(mean(X,2),1,size(X,2));
+0034 scale  = @(X) norm(center(X),<span class="string">'fro'</span>) ;
+0035 
+0036 <span class="comment">%% Initialization</span>
+0037 <span class="comment">% 1. Fill in X with subsampled shapes</span>
+0038 <span class="comment">% 2. Center and standardize them</span>
+0039 <span class="comment">% 3. Compute Singular Value Decompositions and other useful quantities</span>
+0040 ds.shape = cell ( 1, ds.n );
+0041 <span class="keyword">for</span> ii = 1 : ds.n
+0042     fprintf(<span class="string">'Subsampling %s......'</span>, ds.names{ii});
+0043     [ds.shape{ ii }.origV, ds.shape{ ii }.origF] = read_off([meshesPath ds.names{ii} suffix]);
+0044     ds.shape{ ii }.X              = cell( 1, ds.K );
+0045     ds.shape{ ii }.X{ ds.K }      = <a href="get_subsampled_shape.html" class="code" title="function X = get_subsampled_shape( dir , id , N )">get_subsampled_shape</a>( outputPath, ds.ids{ii} , ds.N( ds.K ) );
+0046     ds.shape{ ii }.center         = mean(  ds.shape{ ii }.X{ ds.K }, 2 );
+0047     ds.shape{ ii }.scale          = scale( ds.shape{ ii }.X{ ds.K } );
+0048     ds.shape{ ii }.epsilon        = zeros( 1, ds.K );
+0049     <span class="keyword">for</span> kk = 1 : ds.K
+0050         ds.shape{ ii }.X{kk}     = ds.shape{ii}.X{ ds.K }(:, 1:ds.N( kk ) );
+0051         ds.shape{ ii }.X{kk}     = center(  ds.shape{ii}.X{kk} ) / scale(  ds.shape{ii}.X{kk} ) ;
+0052         [ ds.shape{ ii }.U_X{kk} , tmpD_X , tmpV_X ] = svd( ds.shape{ii}.X{kk} );
+0053         ds.shape{ ii }.D_X{kk}   = diag( tmpD_X );
+0054         ds.shape{ ii }.V_X{kk}   = tmpV_X(:,1:3);
+0055     <span class="keyword">end</span>
+0056     <span class="keyword">for</span> kk = 2 : ds.K
+0057        ds.shape{ ii }.epsilon(kk) = 1.0001*<a href="hausdorff.html" class="code" title="function [d , iargX, iargY] = hausdorff( X , Y )">hausdorff</a>( ds.shape{ii}.X{kk}(:,1:ds.N(kk-1)), ds.shape{ii}.X{kk} );
+0058        ds.shape{ ii }.neigh{ kk } = <a href="jrangesearch.html" class="code" title="function [ M, MD2 ] = jrangesearch ( X, Y, epsilon )">jrangesearch</a>(ds.shape{ii}.X{kk}(:,1:ds.N(kk-1)), ds.shape{ii}.X{kk} , ds.shape{ii}.epsilon(kk));
+0059     <span class="keyword">end</span>
+0060     fprintf(<span class="string">'DONE\n'</span>);
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">%Read the low resolution files, these are used for display puposes only</span>
+0064 <span class="keyword">for</span> ii = 1 : ds.n
+0065     <span class="comment">%Read the files</span>
+0066     lowres_off_fn = [outputPath <span class="string">'subsampled'</span> filesep ds.ids{ii} <span class="string">'.off'</span>];
+0067     <span class="keyword">if</span> exist( lowres_off_fn , <span class="string">'file'</span> )
+0068         [ds.shape{ ii }.lowres.V ,ds.shape{ ii }.lowres.F] = read_off(lowres_off_fn);
+0069     <span class="keyword">else</span>
+0070         error([<span class="string">'Cannot find low resolution file '</span> lowres_off_fn ]);
+0071     <span class="keyword">end</span>
+0072     <span class="comment">%Scale according to highest resolution point cloud</span>
+0073     ds.shape{ii}.lowres.V = ds.shape{ii}.lowres.V-repmat(ds.shape{ii}.center,1,size(ds.shape{ii}.lowres.V,2));
+0074     ds.shape{ii}.lowres.V = ds.shape{ii}.lowres.V / ( ds.shape{ii}.scale / sqrt( ds.N( ds.K ) ) );
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="comment">%% Alignment</span>
+0078 <span class="comment">% 'pa' stands for pairwise alignment</span>
+0079 <span class="comment">% 1. Compute a pairwise alignment of all pairs, then compute minimum</span>
+0080 <span class="comment">%    spanning tree</span>
+0081 k = 1;
+0082 pa.A          = <a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>( ds.n ); <span class="comment">% a 1 entry in this matrix indicates the pairwise distance should be computed</span>
+0083 <span class="comment">% pa.L          = 8; % Number of positions to test, the first 8 are the 8 possibilities for aligning the principal axes</span>
+0084 pa.max_iter   = max_iter;
+0085 pa.allow_reflection = allow_reflection;
+0086 f             = @( ii , jj ) <a href="gpd.html" class="code" title="function [ d, R, P, gamma ] = gpd ( X, Y, max_iter, ref )">gpd</a>( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.max_iter, pa.allow_reflection );
+0087 pa.pfj        = [ds.msc.output_dir <span class="string">'jobs/low/'</span>];
+0088 pa.codePath   = codePath;
+0089 pa.email_notification = email_notification;
+0090 
+0091 <span class="comment">% Break up all the pairwise distances into a a bunch of parallel tasks,</span>
+0092 <span class="comment">% to be computed either in the same machine or in different ones</span>
+0093 <span class="comment">% Remember to remove all previous jobs in the output/jobs folder!</span>
+0094 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>(pa.pfj);
+0095 pa = <a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>( pa, f, n_jobs, use_cluster );
+0096 
+0097 disp(<span class="string">'Saving current workspace...'</span>);
+0098 save([outputPath <span class="string">'session_low.mat'</span>], <span class="string">'-v7.3'</span>);
+0099 disp(<span class="string">'Saved!'</span>);
+0100</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

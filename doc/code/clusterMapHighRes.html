@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of clusterMapHighRes</title>
+  <meta name="keywords" content="clusterMapHighRes">
+  <meta name="description" content="% set path and preparation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; clusterMapHighRes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>clusterMapHighRes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% set path and preparation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% set path and preparation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>	Computes optimal rotation and permutation for true entries of A</li><li><a href="jadd_path.html" class="code" title="">jadd_path</a>	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</li><li><a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>	Takes a global alignment and returns a pairwise one</li><li><a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>	Local Generalized Procrustes Distance function</li><li><a href="touch.html" class="code" title="function touch(dir_string)">touch</a>	TOUCH Summary of this function goes here</li><li><a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>	Creates a sparse square matrix with 1's above the diagonal,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% set path and preparation</span>
+0002 <a href="jadd_path.html" class="code" title="">jadd_path</a>;
+0003 
+0004 disp(<span class="string">'Loading saved workspace...'</span>);
+0005 load([outputPath <span class="string">'session_low.mat'</span>]);
+0006 disp(<span class="string">'Loaded!'</span>);
+0007 
+0008 <span class="comment">%% Compute the edges in the MST with higher number of points</span>
+0009 pa_tmp = <a href="localize.html" class="code" title="function pa = localize( ga )">localize</a>( ga );
+0010 pa.R = pa_tmp.R;
+0011 
+0012 k         = 2; <span class="comment">% Which level to run next</span>
+0013 pa.A      = <a href="upper_triangle.html" class="code" title="function M=upper_triangle( nn )">upper_triangle</a>( ds.n );
+0014 pa.pfj    = [ds.msc.output_dir <span class="string">'jobs/high/'</span>]; <span class="comment">% 'pfj' stands for path for jobs</span>
+0015 tmpR  = pa.R;
+0016 tmpP  = pa.P;
+0017 f   = @( ii , jj ) <a href="locgpd.html" class="code" title="function [ d, R, P, gamma ] = locgpd( X, Y, R_0, M_0, max_iter )">locgpd</a>( ds.shape{ii}.X{k}, ds.shape{jj}.X{k}, pa.R{ii,jj}, ones(ds.N(k)), pa.max_iter );
+0018 
+0019 <span class="comment">% Remember to remove all previous jobs in the output/jobs folder!</span>
+0020 <span class="comment">% system(['rm -rf ' pa.pfj '/*']);</span>
+0021 <a href="touch.html" class="code" title="function touch(dir_string)">touch</a>(pa.pfj);
+0022 pa = <a href="compute_alignment.html" class="code" title="function pa = compute_alignment( pa, f, n_jobs, use_cluster )">compute_alignment</a>( pa, f, n_jobs, use_cluster );
+0023 
+0024 disp(<span class="string">'Saving current workspace...'</span>);
+0025 save([outputPath <span class="string">'session_high.mat'</span>], <span class="string">'-v7.3'</span>);
+0026 disp(<span class="string">'Saved!'</span>);</pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

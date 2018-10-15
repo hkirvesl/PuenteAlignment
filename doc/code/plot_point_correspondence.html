@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_point_correspondence</title>
+  <meta name="keywords" content="plot_point_correspondence">
+  <meta name="description" content="Plots point correspondences between shapes">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">code</a> &gt; plot_point_correspondence.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for code&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>plot_point_correspondence
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Plots point correspondences between shapes</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function plot_point_correspondence(X,Y,Rot) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Plots point correspondences between shapes</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="temp_make_plots.html" class="code" title="">temp_make_plots</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plot_point_correspondence(X,Y,Rot)</a>
+0002 <span class="comment">%Plots point correspondences between shapes</span>
+0003 
+0004 figure(<span class="string">'renderer'</span>,<span class="string">'opengl'</span>); hold on;
+0005 Y=Rot*Y;
+0006 plot3(X(1,:),X(2,:),X(3,:),<span class="string">'b.'</span>);
+0007 plot3(Y(1,:),Y(2,:),Y(3,:),<span class="string">'r.'</span>);
+0008 <span class="keyword">for</span> kk=1:size(Y,2) 
+0009     plot3([X(1,kk) Y(1,(kk))],[X(2,kk) Y(2,kk)],[X(3,kk) Y(3,kk)],<span class="string">'k-'</span>);
+0010 <span class="keyword">end</span>
+0011 axis equal;
+0012 
+0013 <span class="comment">%</span>
+0014 <span class="comment">% global bones;</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% %Bring bone ii and jj to coordinates of bone 1</span>
+0017 <span class="comment">% Rotation_i = bones.globalrotations(3*(ii-1)+1:3*(ii-1)+3,1:3)';</span>
+0018 <span class="comment">% Rotation_j = bones.globalrotations(3*(jj-1)+1:3*(jj-1)+3,1:3)';</span>
+0019 <span class="comment">% Vinew=Rotation_i*bones.verts{ind_sample_size}{ii};</span>
+0020 <span class="comment">% Vjnew=Rotation_j*bones.verts{ind_sample_size}{jj};</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% %%Find nearest neighbors</span>
+0023 <span class="comment">% %[indi,disti]=knnsearch(Vjnew',Vinew');</span>
+0024 <span class="comment">% %[indj,distj]=knnsearch(Vinew',Vjnew');</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% %Use the correspondences given by globalpc</span>
+0027 <span class="comment">% indi = invert_permutation(bones.globalpc{ind_sample_size}{ii}( invert_permutation(bones.globalpc{ind_sample_size}{jj}) ));</span>
+0028 <span class="comment">% %indi = invert_permutation(bones.globalpc{ind_sample_size}{ii}(invert_permutation(bones.globalpc{ind_sample_size}{jj})))</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% %Make the plot</span>
+0031 <span class="comment">% figure('renderer','opengl'); hold on;</span>
+0032 <span class="comment">% %figure; hold on;</span>
+0033 <span class="comment">% %title(['Point correspondences - ' bones.names{ii} ' (blue) &lt;-&gt; ' bones.names{jj} '(red)'  ]);</span>
+0034 <span class="comment">% plot3(Vinew(1,:),Vinew(2,:),Vinew(3,:),'b.');</span>
+0035 <span class="comment">% plot3(Vjnew(1,:),Vjnew(2,:),Vjnew(3,:),'r.');</span>
+0036 <span class="comment">% for kk=1:size(Vinew,2)</span>
+0037 <span class="comment">%     plot3([Vinew(1,kk) Vjnew(1,indi(kk))],[Vinew(2,kk) Vjnew(2,indi(kk))],[Vinew(3,kk) Vjnew(3,indi(kk))],'k-');</span>
+0038 <span class="comment">%     %plot3([Vjnew(1,kk) Vinew(1,indj(kk))],[Vjnew(2,kk) Vinew(2,indj(kk))],[Vjnew(3,kk) Vinew(3,indj(kk))],'m-');</span>
+0039 <span class="comment">% end</span>
+0040 <span class="comment">% %plot_mesh(Rotation_j*bones.lowres{jj}.verts,bones.lowres{jj}.faces);</span>
+0041 <span class="comment">% axis equal;</span></pre></div>
+<hr><address>Generated on Sat 03-Dec-2016 11:05:12 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
