@@ -9,7 +9,7 @@ jadd_path;
 
 ds.msc.output_dir   = outputPath;
 ds.msc.mesh_aligned_dir = [outputPath, 'aligned' , filesep];   %%%% for Windows
-pa.pfj        = [ds.msc.output_dir, 'jobs', 'high', filesep];   %%%% for Windows
+pa.pfj        = [ds.msc.output_dir, 'jobs/', 'high', filesep];   %%%% for Windows
 
 pa = reduce( ds, pa, n_jobs );
 
