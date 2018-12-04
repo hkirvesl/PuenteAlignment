@@ -33,6 +33,8 @@ end
 
 touch([outputPath 'original/']);
 touch([outputPath 'subsampled/']);
+touch([outputPath 'subsampled/' ssType '/']);
+touch([outputPath 'subsampled/GPR/']);
 touch([outputPath 'aligned/']);
 touch([outputPath 'jobs/']);
 
@@ -75,7 +77,9 @@ for ii = 1 : ds.n
     ds.shape{ ii }.scale          = scale( ds.shape{ ii }.X{ ds.K } );
     ds.shape{ ii }.epsilon        = zeros( 1, ds.K );
     for kk = 1 : ds.K
-        ds.shape{ ii }.X{kk}     = ds.shape{ii}.X{ ds.K }(:, 1:ds.N( kk ) );
+        if kk == 1
+            ds.shape{ ii }.X{kk}     = get_subsampled_shape( outputPath, ds.ids{ii} , ds.N( kk ), 'GPR' );
+        end
         ds.shape{ ii }.X{kk}     = center(  ds.shape{ii}.X{kk} ) / scale(  ds.shape{ii}.X{kk} ) ;
         [ ds.shape{ ii }.U_X{kk} , tmpD_X , tmpV_X ] = svd( ds.shape{ii}.X{kk} );
         ds.shape{ ii }.D_X{kk}   = diag( tmpD_X );
@@ -91,7 +95,7 @@ disp('Done');
 %Read the low resolution files, these are used for display puposes only
 for ii = 1 : ds.n
     %Read the files
-    lowres_off_fn = [outputPath 'subsampled' filesep ds.ids{ii} '.off'];
+    lowres_off_fn = [outputPath 'subsampled' filesep ssType filesep ds.ids{ii} '.off'];
     if exist( lowres_off_fn , 'file' )
         [ds.shape{ ii }.lowres.V ,ds.shape{ ii }.lowres.F] = read_off(lowres_off_fn);
     else
